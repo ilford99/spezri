@@ -1,173 +1,232 @@
 import streamlit as st
-from PIL import Image, ImageDraw, ImageFont
-import io
-from urllib.parse import quote
-import textwrap
+import time
+import random
+from textwrap import dedent
+import streamlit.components.v1 as components
 
-st.set_page_config(page_title="Danke! 🎉", page_icon="🎉", layout="centered")
+st.set_page_config(page_title="Danke!", page_icon="🎉", layout="wide")
 
-# --- Sidebar settings ---
-st.sidebar.header("⚙️ Einstellungen")
-app_title = st.sidebar.text_input("Titel der Seite", value="Danke für eure wunderschönen Karten! 🎂💌")
-your_name = st.sidebar.text_input("Dein Name", value="Christian")
-public_app_link = st.sidebar.text_input("(Optional) Öffentlicher Link zu dieser Seite", value="")
-show_confetti = st.sidebar.checkbox("Konfetti/Ballons zeigen", value=True)
+# --- Clean UI ---
+hide_default = """
+<style>
+#MainMenu, header, footer {visibility: hidden;}
+.block-container {padding: 0 1rem 2rem;}
+html, body, .stApp {height: 100%;}
+/* Fullscreen animated gradient */
+.bg {
+  position: fixed; inset: 0;
+  background: linear-gradient(120deg, #4b3cff, #ff2d78, #ffb703, #00d4ff);
+  background-size: 300% 300%;
+  animation: move 18s ease-in-out infinite;
+  filter: saturate(1.1);
+}
+@keyframes move { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
-st.title(app_title)
-st.write("Diese kleine App ist mein persönliches, digitales Dankeschön an alle, die mir so liebevoll gestaltete Karten geschickt haben. 💖")
+/* Center stage */
+.stage { position: relative; z-index: 2; min-height: 100vh; display: grid; place-items: center; text-align: center; }
+.huge {
+  font-size: clamp(48px, 9vw, 150px);
+  line-height: 1.0; font-weight: 900; letter-spacing: 1px;
+  color: white; text-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+.sub {
+  margin-top: .6rem; font-size: clamp(18px, 2.5vw, 38px);
+  color: rgba(255,255,255,.95); font-weight: 600;
+}
+.badge { display:inline-flex; align-items:center; gap:.6rem; padding:.6rem 1rem; border-radius:999px; background:rgba(255,255,255,.12); backdrop-filter: blur(6px); color:#fff; font-weight:700; border:1px solid rgba(255,255,255,.25); }
+.btnrow{margin-top:2rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap}
+.btn{cursor:pointer; padding:.9rem 1.2rem; border-radius:14px; border:1px solid rgba(255,255,255,.35); background:rgba(0,0,0,.25); color:#fff; font-size:1rem; font-weight:700}
+.btn:hover{transform: translateY(-1px); filter:brightness(1.08)}
 
-if show_confetti:
+/* Subtle floating emojis */
+.floaters { position: fixed; inset:0; pointer-events:none; z-index:1; }
+.emoji { position:absolute; font-size: clamp(20px, 4vw, 42px); opacity:.9; animation: rise 14s linear infinite; }
+@keyframes rise { from { transform: translateY(15vh) } to { transform: translateY(-110vh) } }
+</style>
+<div class="bg"></div>
+"""
+st.markdown(hide_default, unsafe_allow_html=True)
+
+# --- Floating emojis (pure CSS, randomized positions) ---
+import random
+emojis = ["🎉","🎈","✨","💖","🥳","🌟","🎊","💫"]
+positions = []
+random.seed(7)
+for i in range(28):
+    left = random.randint(0, 100)
+    delay = random.uniform(0, 12)
+    emoji = random.choice(emojis)
+    positions.append((left, delay, emoji))
+html_floaters = [f'<div class="emoji" style="left:{l}%; bottom:-10vh; animation-delay:{d:.1f}s">{e}</div>' for l,d,e in positions]
+st.markdown('<div class="floaters">' + ''.join(html_floaters) + '</div>', unsafe_allow_html=True)
+
+# --- Hero content ---
+col = st.container()
+with col:
+    st.markdown('<div class="stage">', unsafe_allow_html=True)
+    st.markdown('<div class="badge">💌 Von Herzen: Danke!</div>', unsafe_allow_html=True)
+    st.markdown('<div class="huge">DANKE<br/>FÜR EURE WUNDERSCHÖNEN KARTEN</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub">Ihr habt mir den Tag versüsst – ihr seid grossartig. 💫</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- Confetti via JS (canvas-confetti) ---
+confetti_html = dedent(
+    """
+    <div id="confetti-root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+      function burst() {
+        const count = 300; // intense!
+        const defaults = { origin: { y: 0.7 } };
+        function fire(particleRatio, opts) {
+          confetti(Object.assign({}, defaults, opts, { particleCount: Math.floor(count * particleRatio) }));
+        }
+        fire(0.25, { spread: 46, startVelocity: 55 });
+        fire(0.2,  { spread: 60 });
+        fire(0.35, { spread: 120, decay: 0.91, scalar: 1.0 });
+        fire(0.1,  { spread: 120, startVelocity: 35, decay: 0.92 });
+        fire(0.1,  { spread: 120, startVelocity: 25 });
+      }
+      // Grand opening
+      burst();
+      // Encore bursts
+      let times = 0;
+      const encore = setInterval(()=>{ burst(); times++; if(times>2) clearInterval(encore); }, 2200);
+
+      // Subtle stream for a few seconds
+      const duration = 3000;
+      const end = Date.now() + duration;
+      (function frame() {
+        confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 } });
+        confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 } });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      }());
+    </script>
+    """
+)
+components.html(confetti_html, height=0)
+
+# --- Balloons (Streamlit native, triggers once per rerun) ---
+st.balloons()
+
+# --- Optional: one tap to replay confetti ---
+replay = st.button("✨ Noch mehr Konfetti!")
+if replay:
+    components.html(confetti_html, height=0)
     st.balloons()
+import streamlit as st
+import time
+import random
+from textwrap import dedent
+import streamlit.components.v1 as components
 
-# --- Upload section ---
-st.subheader("1) Eure Karten – Galerie")
-images = st.file_uploader("Lade Fotos/Scans der Karten hoch (JPG/PNG)", type=["jpg","jpeg","png"], accept_multiple_files=True)
+st.set_page_config(page_title="Danke!", page_icon="🎉", layout="wide")
 
-if images:
-    cols = st.columns(3)
-    for i, f in enumerate(images):
-        with cols[i % 3]:
-            st.image(f, use_container_width=True, caption=f.name)
-else:
-    st.info("Noch keine Bilder hochgeladen. Du kannst die Galerie jederzeit später befüllen.")
+# --- Clean UI ---
+hide_default = """
+<style>
+#MainMenu, header, footer {visibility: hidden;}
+.block-container {padding: 0 1rem 2rem;}
+html, body, .stApp {height: 100%;}
+/* Fullscreen animated gradient */
+.bg {
+  position: fixed; inset: 0;
+  background: linear-gradient(120deg, #4b3cff, #ff2d78, #ffb703, #00d4ff);
+  background-size: 300% 300%;
+  animation: move 18s ease-in-out infinite;
+  filter: saturate(1.1);
+}
+@keyframes move { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
-# --- Recipients & notes ---
-st.subheader("2) Namen & kurze Notizen")
-st.caption("Eine Zeile pro Person. Format: **Name | kurze Notiz** (Notiz optional)")
-raw_lines = st.text_area(
-    "Beispiel:\nAlex | Die Aquarellblumen waren der Wahnsinn!\nMara | Deine Collage hat mich mega berührt.\nNonno",
-    value="Alex | Die Aquarellblumen waren der Wahnsinn!\nMara | Deine Collage hat mich mega berührt.\nNonno",
-    height=140
+/* Center stage */
+.stage { position: relative; z-index: 2; min-height: 100vh; display: grid; place-items: center; text-align: center; }
+.huge {
+  font-size: clamp(48px, 9vw, 150px);
+  line-height: 1.0; font-weight: 900; letter-spacing: 1px;
+  color: white; text-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+.sub {
+  margin-top: .6rem; font-size: clamp(18px, 2.5vw, 38px);
+  color: rgba(255,255,255,.95); font-weight: 600;
+}
+.badge { display:inline-flex; align-items:center; gap:.6rem; padding:.6rem 1rem; border-radius:999px; background:rgba(255,255,255,.12); backdrop-filter: blur(6px); color:#fff; font-weight:700; border:1px solid rgba(255,255,255,.25); }
+.btnrow{margin-top:2rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap}
+.btn{cursor:pointer; padding:.9rem 1.2rem; border-radius:14px; border:1px solid rgba(255,255,255,.35); background:rgba(0,0,0,.25); color:#fff; font-size:1rem; font-weight:700}
+.btn:hover{transform: translateY(-1px); filter:brightness(1.08)}
+
+/* Subtle floating emojis */
+.floaters { position: fixed; inset:0; pointer-events:none; z-index:1; }
+.emoji { position:absolute; font-size: clamp(20px, 4vw, 42px); opacity:.9; animation: rise 14s linear infinite; }
+@keyframes rise { from { transform: translateY(15vh) } to { transform: translateY(-110vh) } }
+</style>
+<div class="bg"></div>
+"""
+st.markdown(hide_default, unsafe_allow_html=True)
+
+# --- Floating emojis (pure CSS, randomized positions) ---
+import random
+emojis = ["🎉","🎈","✨","💖","🥳","🌟","🎊","💫"]
+positions = []
+random.seed(7)
+for i in range(28):
+    left = random.randint(0, 100)
+    delay = random.uniform(0, 12)
+    emoji = random.choice(emojis)
+    positions.append((left, delay, emoji))
+html_floaters = [f'<div class="emoji" style="left:{l}%; bottom:-10vh; animation-delay:{d:.1f}s">{e}</div>' for l,d,e in positions]
+st.markdown('<div class="floaters">' + ''.join(html_floaters) + '</div>', unsafe_allow_html=True)
+
+# --- Hero content ---
+col = st.container()
+with col:
+    st.markdown('<div class="stage">', unsafe_allow_html=True)
+    st.markdown('<div class="badge">💌 Von Herzen: Danke!</div>', unsafe_allow_html=True)
+    st.markdown('<div class="huge">DANKE<br/>FÜR EURE WUNDERSCHÖNEN KARTEN</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub">Ihr habt mir den Tag versüsst – ihr seid grossartig. 💫</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- Confetti via JS (canvas-confetti) ---
+confetti_html = dedent(
+    """
+    <div id="confetti-root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+      function burst() {
+        const count = 300; // intense!
+        const defaults = { origin: { y: 0.7 } };
+        function fire(particleRatio, opts) {
+          confetti(Object.assign({}, defaults, opts, { particleCount: Math.floor(count * particleRatio) }));
+        }
+        fire(0.25, { spread: 46, startVelocity: 55 });
+        fire(0.2,  { spread: 60 });
+        fire(0.35, { spread: 120, decay: 0.91, scalar: 1.0 });
+        fire(0.1,  { spread: 120, startVelocity: 35, decay: 0.92 });
+        fire(0.1,  { spread: 120, startVelocity: 25 });
+      }
+      // Grand opening
+      burst();
+      // Encore bursts
+      let times = 0;
+      const encore = setInterval(()=>{ burst(); times++; if(times>2) clearInterval(encore); }, 2200);
+
+      // Subtle stream for a few seconds
+      const duration = 3000;
+      const end = Date.now() + duration;
+      (function frame() {
+        confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 } });
+        confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 } });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      }());
+    </script>
+    """
 )
+components.html(confetti_html, height=0)
 
-# --- Template ---
-st.subheader("3) Dankestext‑Vorlage")
-st.caption("Nutze Platzhalter: **{name}**, **{dein_name}** und **{notiz}**")
-msg_template = st.text_area(
-    "Vorlage",
-    value=(
-        "Hoi {name}!\n\n"
-        "Von Herzen danke für die wunderschöne Karte – sie hat mir den Tag versüsst. "
-        "{notiz}\n\n"
-        "Herzlich, {dein_name}"
-    ),
-    height=140
-)
+# --- Balloons (Streamlit native, triggers once per rerun) ---
+st.balloons()
 
-colA, colB = st.columns(2)
-with colA:
-    add_wa_link = st.checkbox("WhatsApp‑Link mit Nachricht generieren", value=True)
-with colB:
-    include_app_link = st.checkbox("App‑Link (oben) am Ende der Nachricht anhängen", value=False)
-
-# --- Parse recipients ---
-recipients = []
-for line in raw_lines.splitlines():
-    if not line.strip():
-        continue
-    if "|" in line:
-        n, note = [p.strip() for p in line.split("|", 1)]
-    else:
-        n, note = line.strip(), ""
-    recipients.append({"name": n, "note": note})
-
-# --- Message builder ---
-if recipients:
-    st.subheader("4) Vorschau & WhatsApp‑Links")
-    for person in recipients:
-        name = person["name"]
-        note = person["note"]
-        text = msg_template.replace("{name}", name).replace("{dein_name}", your_name).replace("{notiz}", note)
-        if include_app_link and public_app_link:
-            text += f"\n\n➡️ {public_app_link}"
-        st.markdown(f"**{name}**")
-        st.text(text)
-        if add_wa_link:
-            wa = f"https://wa.me/?text={quote(text)}"
-            st.markdown(f"[📲 Nachricht in WhatsApp öffnen]({wa})")
-        st.divider()
-else:
-    st.info("Füge mindestens eine Person hinzu, um Nachrichten zu erzeugen.")
-
-# --- Thank‑you card generator ---
-st.subheader("5) Persönliche Dankeskarte als Bild erzeugen (PNG)")
-st.caption("Optional: Erzeuge ein einzelnes Bild mit deinem Dankestext – ideal zum Versenden.")
-
-bg_choice = None
-if images:
-    selected_name = st.selectbox("Hintergrundbild wählen (optional)", ["(einfarbig)"] + [f.name for f in images])
-    if selected_name != "(einfarbig)":
-        bg_choice = next((f for f in images if f.name == selected_name), None)
-
-card_text = st.text_area("Text für die Bildkarte", value="Danke für eure liebevollen Karten!\nIhr seid grossartig. 💫", height=100)
-
-col1, col2, col3 = st.columns(3)
-with col1:
-    card_w = st.number_input("Breite", value=1200, min_value=600, step=50)
-with col2:
-    card_h = st.number_input("Höhe", value=1600, min_value=800, step=50)
-with col3:
-    margin = st.number_input("Rand (px)", value=60, min_value=20, step=5)
-
-# Helper: draw wrapped text
-
-def draw_wrapped(draw, text, box, font):
-    x0, y0, x1, y1 = box
-    max_width = x1 - x0
-    # Estimate wrap width based on font size
-    est_chars = max(10, int(max_width / (font.size * 0.55)))
-    lines = []
-    for para in text.split("\n"):
-        lines += textwrap.wrap(para, width=est_chars) or [""]
-    y = y0
-    for line in lines:
-        w, h = draw.textbbox((0, 0), line, font=font)[2:]
-        draw.text((x0, y), line, fill=(255, 255, 255), font=font)
-        y += h + 8
-
-if st.button("🖼️ Karte erzeugen"):
-    # Background
-    if bg_choice:
-        bg_img = Image.open(bg_choice).convert("RGB")
-        bg_img = bg_img.resize((card_w, card_h))
-        canvas = bg_img
-        overlay = Image.new("RGBA", (card_w, card_h), (0, 0, 0, 120))  # darken for readability
-        canvas = Image.alpha_composite(canvas.convert("RGBA"), overlay)
-        canvas = canvas.convert("RGB")
-    else:
-        # gradient background
-        canvas = Image.new("RGB", (card_w, card_h), (38, 38, 58))
-        grad = Image.new("RGB", (1, card_h), 0)
-        for y in range(card_h):
-            c = int(38 + (y / card_h) * 40)
-            grad.putpixel((0, y), (c, c, c + 10))
-        grad = grad.resize((card_w, card_h))
-        canvas.paste(grad, (0, 0))
-
-    draw = ImageDraw.Draw(canvas)
-
-    # Fonts: use default PIL font if no TTF is available on host
-    try:
-        title_font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=64)
-        body_font = ImageFont.truetype("DejaVuSans.ttf", size=44)
-    except Exception:
-        title_font = ImageFont.load_default()
-        body_font = ImageFont.load_default()
-
-    # Header
-    title_text = "Danke!"
-    tw, th = draw.textbbox((0, 0), title_text, font=title_font)[2:]
-    draw.text(((card_w - tw) // 2, margin), title_text, fill=(255, 255, 255), font=title_font)
-
-    # Body box
-    box = (margin, margin + th + 30, card_w - margin, card_h - margin)
-    draw_wrapped(draw, card_text, box, body_font)
-
-    buf = io.BytesIO()
-    canvas.save(buf, format="PNG")
-    data = buf.getvalue()
-    st.image(data, caption="Vorschau", use_container_width=True)
-    st.download_button("PNG herunterladen", data=data, file_name="danke_karte.png", mime="image/png")
-
-st.markdown("---")
-st.caption("Tipp: Teile diese Seite per Link oder generiere pro Person direkt eine WhatsApp‑Nachricht oben in Abschnitt 4.")
+# --- Optional: one tap to replay confetti ---
+replay = st.button("✨ Noch mehr Konfetti!")
+if replay:
+    components.html(confetti_html, height=0)
+    st.balloons()
