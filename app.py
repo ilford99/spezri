@@ -68,18 +68,19 @@ html, body, .stApp {height: 100%; overflow-x: hidden;}
     100% {transform: translateX(200px);}
 }
 
-/* Hauptbühne */
+/* Hauptbühne - kompakt ohne Scrollen */
 .stage {
-    position: relative;
+    position: fixed;
+    inset: 0;
     z-index: 3;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 2rem;
+    padding: 1rem;
     animation: fadeInUp 1.5s ease-out;
+    overflow: hidden;
 }
 
 @keyframes fadeInUp {
@@ -87,10 +88,10 @@ html, body, .stApp {height: 100%; overflow-x: hidden;}
     to {opacity: 1; transform: translateY(0);}
 }
 
-/* Haupttext mit Glow-Effekt */
+/* Haupttext mit Glow-Effekt - angepasste Größe */
 .huge {
-    font-size: clamp(56px, 10vw, 180px);
-    line-height: 1.1;
+    font-size: clamp(48px, 8vw, 120px);
+    line-height: 1.0;
     font-weight: 900;
     letter-spacing: -1px;
     color: white;
@@ -98,7 +99,7 @@ html, body, .stApp {height: 100%; overflow-x: hidden;}
         0 0 40px rgba(255,255,255,0.5),
         0 0 80px rgba(255,182,193,0.4),
         0 10px 30px rgba(0,0,0,0.3);
-    margin: 1rem 0;
+    margin: 0.5rem 0;
     animation: pulse 3s ease-in-out infinite;
 }
 
@@ -107,32 +108,33 @@ html, body, .stApp {height: 100%; overflow-x: hidden;}
     50% {transform: scale(1.02);}
 }
 
-/* Untertext */
+/* Untertext - kompakter */
 .sub {
-    margin-top: 1.5rem;
-    font-size: clamp(20px, 3vw, 42px);
+    margin-top: 0.8rem;
+    font-size: clamp(16px, 2.5vw, 28px);
     color: rgba(255,255,255,0.95);
     font-weight: 600;
     text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    max-width: 800px;
-    line-height: 1.4;
+    max-width: 700px;
+    line-height: 1.3;
 }
 
-/* Badge mit Animation */
+/* Badge mit Animation - kleiner */
 .badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.8rem;
-    padding: 0.8rem 1.5rem;
+    gap: 0.6rem;
+    padding: 0.6rem 1.2rem;
     border-radius: 999px;
     background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1));
     backdrop-filter: blur(10px);
     color: #fff;
     font-weight: 800;
-    font-size: clamp(16px, 2vw, 24px);
+    font-size: clamp(14px, 1.8vw, 20px);
     border: 2px solid rgba(255,255,255,0.3);
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     animation: float 6s ease-in-out infinite;
+    margin-bottom: 0.5rem;
 }
 
 @keyframes float {
@@ -140,15 +142,15 @@ html, body, .stApp {height: 100%; overflow-x: hidden;}
     50% {transform: translateY(-10px);}
 }
 
-/* Herz-Animation */
+/* Herz-Animation - kompakter */
 .heart-container {
     position: relative;
-    margin: 2rem 0;
-    height: 120px;
+    margin: 1rem 0;
+    height: 60px;
 }
 
 .beating-heart {
-    font-size: clamp(60px, 8vw, 100px);
+    font-size: clamp(40px, 6vw, 60px);
     animation: heartbeat 1.5s ease-in-out infinite;
     display: inline-block;
     filter: drop-shadow(0 0 20px rgba(255,105,180,0.6));
@@ -162,14 +164,14 @@ html, body, .stApp {height: 100%; overflow-x: hidden;}
     70% {transform: scale(1);}
 }
 
-/* Schwebende Emojis mit verschiedenen Geschwindigkeiten */
+/* Schwebende Emojis mit verschiedenen Geschwindigkeiten - dezenter */
 .floaters {position: fixed; inset: 0; pointer-events: none; z-index: 2;}
 .emoji {
     position: absolute;
-    font-size: clamp(24px, 4vw, 48px);
-    opacity: 0.85;
+    font-size: clamp(20px, 3vw, 36px);
+    opacity: 0.6;
     animation: rise var(--duration) linear infinite;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
 }
 
 @keyframes rise {
@@ -185,24 +187,24 @@ html, body, .stApp {height: 100%; overflow-x: hidden;}
     }
 }
 
-/* Buttons mit Hover-Effekt */
+/* Buttons mit Hover-Effekt - kompakter */
 .btn-container {
-    margin-top: 3rem;
+    margin-top: 1.5rem;
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
 }
 
 .magic-btn {
     cursor: pointer;
-    padding: 1rem 2rem;
+    padding: 0.7rem 1.5rem;
     border-radius: 50px;
     border: 2px solid rgba(255,255,255,0.4);
     background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
     backdrop-filter: blur(10px);
     color: #fff;
-    font-size: clamp(16px, 1.5vw, 20px);
+    font-size: clamp(14px, 1.3vw, 18px);
     font-weight: 800;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -217,14 +219,14 @@ html, body, .stApp {height: 100%; overflow-x: hidden;}
     background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.15));
 }
 
-/* Message Cards */
+/* Message Cards - kompakter oder ganz entfernen für Single Screen */
 .message-card {
     background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
     backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 2rem;
-    margin: 2rem auto;
-    max-width: 600px;
+    border-radius: 15px;
+    padding: 1rem 1.5rem;
+    margin: 1rem auto;
+    max-width: 500px;
     border: 1px solid rgba(255,255,255,0.2);
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     animation: slideIn 1s ease-out 0.5s both;
@@ -239,17 +241,26 @@ html, body, .stApp {height: 100%; overflow-x: hidden;}
 
 .quote {
     font-style: italic;
-    font-size: clamp(18px, 2.5vw, 26px);
-    line-height: 1.6;
+    font-size: clamp(14px, 2vw, 20px);
+    line-height: 1.4;
     opacity: 0.95;
 }
 
-/* Responsivität */
+/* Responsivität für kleinere Bildschirme */
 @media (max-width: 768px) {
-    .stage {padding: 1rem;}
-    .huge {font-size: clamp(48px, 12vw, 120px);}
-    .btn-container {flex-direction: column; align-items: center;}
-    .magic-btn {width: 250px;}
+    .stage {padding: 0.5rem;}
+    .huge {font-size: clamp(40px, 10vw, 80px);}
+    .btn-container {gap: 0.5rem;}
+    .magic-btn {padding: 0.6rem 1.2rem; font-size: 14px;}
+    .message-card {display: none;} /* Verstecke Karte auf Mobile für mehr Platz */
+}
+
+@media (max-height: 700px) {
+    .huge {font-size: clamp(36px, 7vw, 70px);}
+    .sub {font-size: clamp(14px, 2vw, 22px);}
+    .heart-container {height: 40px;}
+    .beating-heart {font-size: 40px;}
+    .message-card {display: none;} /* Verstecke Karte bei niedrigen Bildschirmen */
 }
 
 /* Zusätzliche Animationen */
@@ -302,20 +313,20 @@ for _ in range(50):
 stars_html += '</div>'
 st.markdown(stars_html, unsafe_allow_html=True)
 
-# Erweiterte schwebende Emojis mit verschiedenen Geschwindigkeiten
+# Erweiterte schwebende Emojis mit verschiedenen Geschwindigkeiten - dezenter
 emojis = ["🎉","🎈","✨","💖","🥳","🌟","🎊","💫","🫶","💐","🎀","🤍","🕊️","🌸","🧡","😍","🤩","🦋","🌺","💕","🌈","⭐"]
 floater_html = '<div class="floaters">'
 random.seed(77)
-for i in range(35):
+for i in range(25):  # Reduziert von 35 auf 25
     left = random.randint(5, 95)
     delay = random.uniform(0, 15)
-    duration = random.uniform(12, 20)
+    duration = random.uniform(14, 22)  # Langsamere Animation
     emoji = random.choice(emojis)
     floater_html += f'<div class="emoji" style="left:{left}%; animation-delay:{delay}s; --duration:{duration}s;">{emoji}</div>'
 floater_html += '</div>'
 st.markdown(floater_html, unsafe_allow_html=True)
 
-# Hauptinhalt
+# Hauptinhalt - alles kompakt auf einem Screen
 st.markdown('<div class="stage">', unsafe_allow_html=True)
 
 # Badge
@@ -327,7 +338,7 @@ st.markdown('<div class="heart-container"><span class="beating-heart">💗</span
 # Hauptnachricht mit Glow-Effekt
 st.markdown('<div class="huge glow">DANKE<br/>LIEBE RITA</div>', unsafe_allow_html=True)
 
-# Untertitel
+# Untertitel - kompakter
 st.markdown('''
 <div class="sub">
     Deine wunderschöne Karte war wie ein kleiner Sonnenstrahl ☀️<br/>
@@ -335,15 +346,12 @@ st.markdown('''
 </div>
 ''', unsafe_allow_html=True)
 
-# Nachrichtenkarte mit persönlicher Note
+# Optional: Nachrichtenkarte nur auf größeren Bildschirmen
 st.markdown('''
 <div class="message-card">
     <div class="quote">
-        "Die schönsten Geschenke kommen von Herzen –<br/>
-        und deine Karte war ein Meisterwerk der Herzlichkeit."
+        "Die schönsten Geschenke kommen von Herzen" 🌸
     </div>
-    <br/>
-    <div style="font-size: 24px; margin-top: 1rem;">🌸 🤍 🌸</div>
 </div>
 ''', unsafe_allow_html=True)
 
@@ -483,12 +491,12 @@ components.html(enhanced_confetti, height=0)
 # Streamlit Balloons als Extra
 st.balloons()
 
-# Footer mit Zeit-Stempel
+# Dezenter Footer mit Zeit-Stempel
 current_time = datetime.now().strftime("%d.%m.%Y")
 footer_html = f"""
-<div style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); 
-            color: rgba(255,255,255,0.6); font-size: 14px; z-index: 10;">
-    Mit Liebe erstellt am {current_time} 🤍
+<div style="position: fixed; bottom: 8px; right: 20px; 
+            color: rgba(255,255,255,0.4); font-size: 12px; z-index: 10;">
+    {current_time} 🤍
 </div>
 """
 st.markdown(footer_html, unsafe_allow_html=True)
