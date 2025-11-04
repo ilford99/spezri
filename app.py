@@ -341,8 +341,8 @@ st.markdown('<div class="huge glow">DANKE<br/>LIEBE RITA</div>', unsafe_allow_ht
 # Untertitel - kompakter
 st.markdown('''
 <div class="sub">
-    Deine wunderschöne Karte war wie ein kleiner Sonnenstrahl ☀️<br/>
-    Sie hat meinen Tag erhellt und mein Herz erwärmt 🫶
+    Deine wunderschöne Karte hat mich so gefreut ☀️<br/>
+    SUnd sie hat mir den Tag versüsst – so schön 😌🍬
 </div>
 ''', unsafe_allow_html=True)
 
