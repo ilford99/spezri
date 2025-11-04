@@ -25,7 +25,7 @@ html, body, .stApp {height: 100%;}
 @keyframes move { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
 /* Center stage */
-.stage { position: relative; z-index: 2; min-height: calc(100vh); display: grid; place-items: center; text-align: center; }
+.stage { position: relative; z-index: 2; min-height: 100vh; display: grid; place-items: center; text-align: center; }
 .huge {
   font-size: clamp(48px, 9vw, 150px);
   line-height: 1.0; font-weight: 900; letter-spacing: 1px;
@@ -136,4 +136,4 @@ components.html(replay_html, height=0, key="replay_button")
 # --- Balloons (Streamlit native, triggers once per rerun) ---
 st.balloons()
 
-min-height: calc(100vh);
+
