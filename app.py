@@ -49,7 +49,7 @@ st.markdown(hide_default, unsafe_allow_html=True)
 
 # --- Floating emojis (pure CSS, randomized positions) ---
 import random
-emojis = ["🎉","🎈","✨","💖","🥳","🌟","🎊","💫"]
+emojis = ["🎉","🎈","✨","💖","🥳","🌟","🎊","💫","🫶","💐","🎀","🤍","🕊️","🌸","🧡","😍","🤩","✨","🌼"]
 positions = []
 random.seed(7)
 for i in range(28):
@@ -65,8 +65,8 @@ col = st.container()
 with col:
     st.markdown('<div class="stage">', unsafe_allow_html=True)
     st.markdown('<div class="badge">💌 Von Herzen: Danke!</div>', unsafe_allow_html=True)
-    st.markdown('<div class="huge">DANKE<br/>FÜR EURE WUNDERSCHÖNEN KARTEN</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub">Ihr habt mir den Tag versüsst – ihr seid grossartig. 💫</div>', unsafe_allow_html=True)
+    st.markdown('<div class="huge">DANKE<br/>LIEBE RITA 🤍</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub">Deine Karte war ein kleines Kunstwerk – danke von Herzen. 🫶🌸</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Confetti via JS (canvas-confetti) ---
