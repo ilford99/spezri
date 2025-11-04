@@ -342,7 +342,7 @@ st.markdown('<div class="huge glow">DANKE<br/>LIEBE RITA</div>', unsafe_allow_ht
 st.markdown('''
 <div class="sub">
     Deine wunderschöne Karte hat mich so gefreut ☀️<br/>
-    SUnd sie hat mir den Tag versüsst – so schön 😌🍬
+    Und sie hat mir den Tag versüsst – so schön 😌🍬
 </div>
 ''', unsafe_allow_html=True)
 
